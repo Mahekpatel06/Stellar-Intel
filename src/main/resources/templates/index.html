@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StellarIntel - Satellite Telemetry Analysis AI</title>
+    
+    <!-- Google Fonts for High-Tech Mission Control Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Space Mission Control Stylesheet -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ==================================================================== -->
+    <!-- SECTION A: MISSION CONTROL HEADER                                    -->
+    <!-- ==================================================================== -->
+    <header class="mission-header">
+        <div class="brand-wrapper">
+            <div class="brand-icon-orbit">
+                <div class="satellite-core"></div>
+                <div class="orbit-node"></div>
+            </div>
+            <div class="brand-titles">
+                <h1 th:text="${appName}">STELLAR<span>INTEL</span></h1>
+                <div class="subtitle" th:text="${appSubtitle}">Satellite Telemetry Analysis AI</div>
+            </div>
+        </div>
+
+        <div class="header-status-group">
+            <div class="status-badge badge-simulation">
+                <span class="pulse-dot"></span>
+                <span>SIMULATION MODE</span>
+            </div>
+            <div class="header-meta">
+                <div>SYS STATUS: NOMINAL</div>
+                <div>AUTONOMOUS TELEMETRY ENGINE</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Operational Telemetry Stream Notice -->
+    <section class="simulation-notice">
+        <div>
+            <span class="notice-badge">TELEMETRY STREAM:</span>
+            <span>Orbital spacecraft telemetry feed active with continuous automated anomaly detection.</span>
+        </div>
+        <div class="notice-disclaimer">
+            Deterministic Telemetry Rule Engine Active
+        </div>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- MAIN GRID: DATA INGESTION & RAW TELEMETRY DASHBOARD                  -->
+    <!-- ==================================================================== -->
+    <div class="main-grid">
+
+        <!-- ================================================================ -->
+        <!-- SECTION B: DATA INGESTION PANEL                                  -->
+        <!-- ================================================================ -->
+        <section class="console-card">
+            <div class="card-header">
+                <div class="card-title-group">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <h2 class="card-title">Data Ingestion Panel</h2>
+                </div>
+                <span class="card-badge">INPUT CHANNEL 01</span>
+            </div>
+
+            <div class="card-body">
+                <!-- Preset Profile Selector -->
+                <div class="form-group">
+                    <label class="form-label" for="profileSelect">
+                        <span>Simulated Telemetry Profile</span>
+                        <span class="label-tag">SYNTHETIC PROFILES</span>
+                    </label>
+                    <select id="profileSelect" class="select-control">
+                        <option value="nominal-orbit">1. Nominal Orbit (All Subsystems Standard)</option>
+                        <option value="solar-flare">2. Solar Flare Event - High Radiation</option>
+                        <option value="reaction-wheel-anomaly">3. Reaction Wheel Anomaly (ADCS Perturbation)</option>
+                        <option value="thermal-anomaly">4. Thermal Anomaly - Elevated Battery Temp</option>
+                        <option value="multiple-anomalies">5. Multi-Subsystem Cascading Anomaly (High Risk)</option>
+                    </select>
+                </div>
+
+                <!-- Action to Load Preset Profile -->
+                <div class="button-row" style="margin-bottom: 1rem; margin-top: -0.25rem;">
+                    <button type="button" id="loadProfileBtn" class="btn btn-secondary" style="width: 100%;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="1 4 1 10 7 10"></polyline>
+                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                        </svg>
+                        Load Profile into Editor
+                    </button>
+                </div>
+
+                <!-- Raw JSON Telemetry Input -->
+                <div class="form-group">
+                    <label class="form-label" for="rawJsonInput">
+                        <span>Raw JSON Telemetry Payload</span>
+                        <span class="label-tag">JSON / UTF-8</span>
+                    </label>
+                    <div class="textarea-container">
+                        <textarea id="rawJsonInput" class="textarea-control" placeholder="Paste or load raw satellite telemetry JSON here..." spellcheck="false"></textarea>
+                    </div>
+                </div>
+
+                <!-- Ingestion & Analysis Actions -->
+                <div class="button-row">
+                    <button type="button" id="parseTelemetryBtn" class="btn btn-secondary" style="flex: 1;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        Parse JSON
+                    </button>
+                    <button type="button" id="analyzeTelemetryBtn" class="btn btn-primary" style="flex: 1.2;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        Analyze Telemetry
+                    </button>
+                </div>
+                <div class="button-row" style="margin-top: 0.5rem;">
+                    <button type="button" id="headerRunAiBtn" class="btn btn-ai-gradient" style="flex: 1;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        Run AI Diagnostic
+                    </button>
+                    <button type="button" id="resetTelemetryBtn" class="btn btn-secondary" style="flex: 0 0 auto; padding: 0.65rem 0.95rem;" title="Reset / Clear Telemetry">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        <span>Reset</span>
+                    </button>
+                </div>
+
+                <!-- Feedback / Error Banner -->
+                <div id="alertBanner" class="alert-feedback hidden">
+                    <span id="alertText">Telemetry ready.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================ -->
+        <!-- SECTION C: MISSION CONTROL TELEMETRY DASHBOARD                   -->
+        <!-- ================================================================ -->
+        <section class="console-card">
+            <div class="card-header">
+                <div class="card-title-group">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                        <line x1="8" y1="21" x2="16" y2="21"/>
+                        <line x1="12" y1="17" x2="12" y2="21"/>
+                    </svg>
+                    <h2 class="card-title">Live Telemetry Instruments</h2>
+                </div>
+                <span class="card-badge">RAW TELEMETRY BUS</span>
+            </div>
+
+            <div class="card-body">
+                <!-- Meta Status Bar (Satellite ID & Timestamp) -->
+                <div class="telemetry-meta-bar">
+                    <div class="meta-item">
+                        <span class="meta-label">Spacecraft ID</span>
+                        <span id="valSatelliteId" class="meta-value highlight">--</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Telemetry Timestamp</span>
+                        <span id="valTimestamp" class="meta-value">--</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Telemetry Stream</span>
+                        <span id="valStreamState" class="meta-value" style="color: #34D399;">SYNCHRONIZED</span>
+                    </div>
+                </div>
+
+                <!-- Telemetry Cards Grid -->
+                <div class="telemetry-grid">
+
+                    <!-- 1. Battery Temperature -->
+                    <div class="telemetry-card">
+                        <div class="telemetry-header">
+                            <span class="telemetry-name">Battery Temp</span>
+                            <span class="telemetry-unit">°C</span>
+                        </div>
+                        <div class="telemetry-value-display">
+                            <span id="valBatteryTemp" class="telemetry-num">--</span>
+                        </div>
+                        <div class="telemetry-bar-bg">
+                            <div id="barBattery" class="telemetry-bar-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="telemetry-subtext">
+                            <span>Nominal: &le; 45.0°C</span>
+                            <span>Thermal Bus</span>
+                        </div>
+                    </div>
+
+                    <!-- 2. Solar Panel Voltage -->
+                    <div class="telemetry-card">
+                        <div class="telemetry-header">
+                            <span class="telemetry-name">Solar Array Bus</span>
+                            <span class="telemetry-unit">Volts (V)</span>
+                        </div>
+                        <div class="telemetry-value-display">
+                            <span id="valSolarVoltage" class="telemetry-num">--</span>
+                        </div>
+                        <div class="telemetry-bar-bg">
+                            <div id="barSolar" class="telemetry-bar-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="telemetry-subtext">
+                            <span>Range: 26.0V &ndash; 35.0V</span>
+                            <span>EPS Array</span>
+                        </div>
+                    </div>
+
+                    <!-- 3. Attitude Control Error X -->
+                    <div class="telemetry-card">
+                        <div class="telemetry-header">
+                            <span class="telemetry-name">ADCS Error X</span>
+                            <span class="telemetry-unit">Degrees (°)</span>
+                        </div>
+                        <div class="telemetry-value-display">
+                            <span id="valAttitudeX" class="telemetry-num">--</span>
+                        </div>
+                        <div class="telemetry-bar-bg">
+                            <div id="barAttitudeX" class="telemetry-bar-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="telemetry-subtext">
+                            <span>Vector component</span>
+                            <span>Pitch Axis</span>
+                        </div>
+                    </div>
+
+                    <!-- 4. Attitude Control Error Y -->
+                    <div class="telemetry-card">
+                        <div class="telemetry-header">
+                            <span class="telemetry-name">ADCS Error Y</span>
+                            <span class="telemetry-unit">Degrees (°)</span>
+                        </div>
+                        <div class="telemetry-value-display">
+                            <span id="valAttitudeY" class="telemetry-num">--</span>
+                        </div>
+                        <div class="telemetry-bar-bg">
+                            <div id="barAttitudeY" class="telemetry-bar-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="telemetry-subtext">
+                            <span>Vector component</span>
+                            <span>Yaw Axis</span>
+                        </div>
+                    </div>
+
+                    <!-- 5. Radiation Exposure Level -->
+                    <div class="telemetry-card" style="grid-column: 1 / -1;">
+                        <div class="telemetry-header">
+                            <span class="telemetry-name">Radiation Exposure Sensor</span>
+                            <span class="telemetry-unit">&micro;Sv/h</span>
+                        </div>
+                        <div class="telemetry-value-display">
+                            <span id="valRadiation" class="telemetry-num">--</span>
+                        </div>
+                        <div class="telemetry-bar-bg">
+                            <div id="barRadiation" class="telemetry-bar-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="telemetry-subtext">
+                            <span>Nominal Threshold: &le; 5.00 &micro;Sv/h | Critical: &ge; 8.00 &micro;Sv/h</span>
+                            <span>Dosimetry Package</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ==================================================================== -->
+    <!-- SECTION C.2: DETERMINISTIC ANALYSIS & HEALTH DIAGNOSTIC CENTER       -->
+    <!-- ==================================================================== -->
+    <section class="console-card" style="margin-bottom: 1.75rem;">
+        <div class="card-header">
+            <div class="card-title-group">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                <h2 class="card-title">Deterministic Telemetry Analysis Engine</h2>
+            </div>
+            <div id="healthBadge" class="health-status-badge badge-nominal">
+                <span class="health-pulse-dot"></span>
+                <span id="healthStatusText">NOMINAL</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <!-- Top Analysis KPIs Bar -->
+            <div class="analysis-kpi-bar">
+                <div class="kpi-item">
+                    <span class="kpi-label">Derived Health Status</span>
+                    <span id="kpiStatus" class="kpi-val status-nominal">NOMINAL</span>
+                </div>
+                <div class="kpi-item">
+                    <span class="kpi-label">Anomaly Detected</span>
+                    <span id="kpiAnomalyDetected" class="kpi-val">NO</span>
+                </div>
+                <div class="kpi-item">
+                    <span class="kpi-label">Anomaly Count</span>
+                    <span id="kpiAnomalyCount" class="kpi-val">0</span>
+                </div>
+                <div class="kpi-item">
+                    <span class="kpi-label">Analysis Method</span>
+                    <span class="kpi-val" style="color: var(--accent-cyan);">DETERMINISTIC JAVA</span>
+                </div>
+            </div>
+
+            <!-- Deterministic Human-Readable Synthesis -->
+            <div class="summary-callout">
+                <div class="summary-header">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <span>Deterministic Analysis Summary (Factual Ground Truth)</span>
+                </div>
+                <p id="analysisSummaryText" class="summary-text">
+                    Select a simulated profile and click &ldquo;Analyze Telemetry&rdquo; to evaluate numerical rules against telemetry thresholds.
+                </p>
+                <div id="statusExplanationText" class="explanation-subtext">
+                    Status Rule: Evaluates pure mathematical limits across Thermal, Dosimetry, ADCS, and Power subsystems.
+                </div>
+            </div>
+
+            <!-- Subsystem Threshold Comparison Section -->
+            <div style="margin-top: 1.5rem;">
+                <div class="section-subheading">
+                    <span>Subsystem Anomaly Breakdown & Explainability</span>
+                    <span class="subheading-tag">EXACT THRESHOLD COMPARISONS</span>
+                </div>
+
+                <div id="anomaliesContainer" class="anomalies-list">
+                    <!-- Populated dynamically via JS: either detected anomaly cards or nominal state placeholder -->
+                    <div class="nominal-state-card">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        <div>
+                            <div style="font-weight: 700; color: #34D399;">All Subsystems Nominal</div>
+                            <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.2rem;">
+                                Battery Temperature (&le; 45°C), Voltage (26V&ndash;35V), ADCS Error Magnitude (&le; 0.05°), and Radiation Flux (&le; 5 µSv/h) are within standard operating boundaries.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- SECTION D: GENAI DIAGNOSTIC COMMAND CENTER                           -->
+    <!-- ==================================================================== -->
+    <section class="genai-section" id="genAiSection">
+        <div class="genai-header">
+            <div class="genai-title-wrap">
+                <div class="ai-spark-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="genai-title">GENAI DIAGNOSTIC COMMAND CENTER</h2>
+                    <span class="genai-subtitle">Autonomous Telemetry Diagnostic &amp; Explanation Engine</span>
+                </div>
+            </div>
+            <div class="header-badges-group">
+                <div class="provenance-pill" title="Deterministic rules remain authoritative ground truth">
+                    <span class="badge-dot-cyan"></span>
+                    <span>DIAGNOSTIC REPORT</span>
+                </div>
+                <div id="aiStatusBadge" class="ai-status-badge">
+                    <span class="standby-pulse" id="aiStatusPulse"></span>
+                    <span id="aiStatusBadgeText">AI ANALYSIS: STANDBY</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="genai-body">
+            <!-- Command Action Bar -->
+            <div class="ai-action-bar">
+                <div class="ai-action-info">
+                    <div class="ai-pipeline-tag">
+                        <span class="pipeline-label">REASONING ENGINE:</span>
+                        <span class="pipeline-val" id="aiEngineLabel">Neural Diagnostic Reasoning Model</span>
+                    </div>
+                    <div class="ai-guardrail-notice">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <span>Grounded in deterministic telemetry analysis and technical flight documentation.</span>
+                    </div>
+                </div>
+                <div class="ai-action-buttons">
+                    <button type="button" id="triggerAiBtn" class="btn btn-ai-run">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        <span>RUN AI DIAGNOSTIC</span>
+                    </button>
+                    <button type="button" id="generateReportBtn" class="btn btn-report-generate" disabled title="Run an AI diagnostic to enable mission report generation">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <span id="generateReportBtnText">GENERATE MISSION REPORT</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 1. Standby / Pre-Analysis State -->
+            <div id="aiStandbyCard" class="genai-scaffolding-card">
+                <div class="scaffolding-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 16v-4M12 8h.01"></path>
+                    </svg>
+                </div>
+                <h3 id="genAiHeaderStatus" class="scaffolding-heading">Awaiting AI Diagnostic Execution</h3>
+                <p id="genAiDescriptionText" class="scaffolding-desc">
+                    Click <strong>&ldquo;RUN AI DIAGNOSTIC&rdquo;</strong> to submit telemetry data and generate a comprehensive diagnostic report and root-cause analysis.
+                </p>
+                <div class="standby-steps">
+                    <div class="step-card"><span class="step-num">01</span><span>Select Profile</span></div>
+                    <div class="step-card"><span class="step-num">02</span><span>Telemetry Analysis</span></div>
+                    <div class="step-card active"><span class="step-num">03</span><span>AI Diagnostic Synthesis</span></div>
+                </div>
+            </div>
+
+            <!-- 2. Loading State: Diagnostic Synthesis -->
+            <div id="aiLoadingCard" class="ai-loading-card hidden">
+                <div class="ai-spinner-container">
+                    <div class="ai-orbit-spinner"></div>
+                    <div class="ai-core-pulse"></div>
+                </div>
+                <div class="loading-text-group">
+                    <h3 id="aiLoadingTitle" class="loading-title">ANALYZING TELEMETRY &amp; SYNTHESIZING DIAGNOSTIC...</h3>
+                    <p id="aiLoadingDesc" class="loading-desc">
+                        Correlating telemetry indicators with subsystem technical documentation...
+                    </p>
+
+                    <!-- Analysis Pipeline Steps -->
+                    <div class="loading-pipeline-steps">
+                        <div id="pipeStep1" class="pipeline-step-row step-active">
+                            <span class="step-indicator-dot"></span>
+                            <span class="step-label">1. PROCESSING TELEMETRY...</span>
+                            <span class="step-state-text">COMPUTING</span>
+                        </div>
+                        <div id="pipeStep2" class="pipeline-step-row step-pending">
+                            <span class="step-indicator-dot"></span>
+                            <span class="step-label">2. EVALUATING SUBSYSTEM THRESHOLDS...</span>
+                            <span class="step-state-text">QUEUED</span>
+                        </div>
+                        <div id="pipeStep3" class="pipeline-step-row step-pending">
+                            <span class="step-indicator-dot"></span>
+                            <span class="step-label">3. CORRELATING TECHNICAL MANUALS...</span>
+                            <span class="step-state-text">QUEUED</span>
+                        </div>
+                        <div id="pipeStep4" class="pipeline-step-row step-pending">
+                            <span class="step-indicator-dot"></span>
+                            <span class="step-label">4. GENERATING DIAGNOSTIC REPORT...</span>
+                            <span class="step-state-text">QUEUED</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Results Container: Rendered GenAI Diagnostic Report -->
+            <div id="aiResultsContainer" class="ai-results-wrapper hidden">
+                <!-- Metadata & Provenance Banner -->
+                <div class="ai-report-meta-banner">
+                    <div class="meta-left">
+                        <span class="interpretation-badge">DIAGNOSTIC SYNTHESIS</span>
+                        <span id="aiModelBadge" class="meta-tag">Autonomous Diagnostic Engine</span>
+                        <span id="aiTimestampBadge" class="meta-tag">--</span>
+                        <span id="aiStatusPill" class="meta-tag tag-success">COMPLETE</span>
+                    </div>
+                    <div class="meta-right">
+                        <button type="button" id="generateReportBannerBtn" class="btn btn-report-download" title="Download Official Mission Diagnostic Report as PDF">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            <span id="generateReportBannerBtnText">EXPORT REPORT (PDF)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Section 0: REFERENCED TECHNICAL DOCUMENTATION -->
+                <div class="ai-diagnostic-block knowledge-context-block">
+                    <div class="block-header">
+                        <div class="block-title">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                            <span>REFERENCED TECHNICAL DOCUMENTATION</span>
+                        </div>
+                        <span class="block-badge rag-badge">SUBSYSTEM MANUALS</span>
+                    </div>
+                    <div class="block-body">
+                        <p class="knowledge-intro-note">
+                            Relevant aerospace engineering documentation correlated with observed telemetry indicators:
+                        </p>
+                        <div id="aiKnowledgeSourcesList" class="knowledge-sources-grid">
+                            <!-- Populated dynamically with knowledge-source-card elements -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 1: AI DIAGNOSTIC SUMMARY -->
+                <div class="ai-diagnostic-block summary-block">
+                    <div class="block-header">
+                        <div class="block-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            <span>AI DIAGNOSTIC SUMMARY</span>
+                        </div>
+                        <span class="block-badge">EXECUTIVE TECHNICAL ASSESSMENT</span>
+                    </div>
+                    <div class="block-body">
+                        <p id="aiSummaryContent" class="summary-paragraph">
+                            <!-- Populated dynamically -->
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Two-Column Grid for Conditions & Contributing Factors -->
+                <div class="ai-two-col-grid">
+                    <!-- Section 2: OBSERVED CONDITIONS -->
+                    <div class="ai-diagnostic-block">
+                        <div class="block-header">
+                            <div class="block-title">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 14 14"></polyline>
+                                </svg>
+                                <span>OBSERVED CONDITIONS</span>
+                            </div>
+                            <span class="block-badge fact-badge">FACTUAL TELEMETRY INTERPRETATION</span>
+                        </div>
+                        <div class="block-body">
+                            <ul id="aiObservedConditionsList" class="ai-bullets-list list-cyan">
+                                <!-- Populated dynamically -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: POSSIBLE CONTRIBUTING FACTORS -->
+                    <div class="ai-diagnostic-block">
+                        <div class="block-header">
+                            <div class="block-title">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2">
+                                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                                </svg>
+                                <span>POSSIBLE CONTRIBUTING FACTORS</span>
+                            </div>
+                            <span class="block-badge hyp-badge">ENGINEERING HYPOTHESES</span>
+                        </div>
+                        <div class="block-body">
+                            <ul id="aiContributingFactorsList" class="ai-bullets-list list-purple">
+                                <!-- Populated dynamically -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: AFFECTED SUBSYSTEMS -->
+                <div class="ai-diagnostic-block">
+                    <div class="block-header">
+                        <div class="block-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="2">
+                                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                                <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                                <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                            </svg>
+                            <span>AFFECTED SUBSYSTEMS</span>
+                        </div>
+                        <span class="block-badge">SYSTEM TAXONOMY</span>
+                    </div>
+                    <div class="block-body">
+                        <div id="aiAffectedSubsystemsContainer" class="subsystems-chips-wrap">
+                            <!-- Populated dynamically with chips -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: RECOMMENDED INVESTIGATION -->
+                <div class="ai-diagnostic-block">
+                    <div class="block-header">
+                        <div class="block-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2">
+                                <polyline points="9 11 12 14 22 4"></polyline>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                            </svg>
+                            <span>RECOMMENDED INVESTIGATION</span>
+                        </div>
+                        <span class="block-badge proc-badge">GROUND OPERATOR PROCEDURES</span>
+                    </div>
+                    <div class="block-body">
+                        <ol id="aiRecommendedInvestigationList" class="ai-numbered-list">
+                            <!-- Populated dynamically -->
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Section 6: LIMITATIONS -->
+                <div class="ai-diagnostic-block limitations-block">
+                    <div class="block-header">
+                        <div class="block-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F43F5E" stroke-width="2">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                            <span>LIMITATIONS</span>
+                        </div>
+                        <span class="block-badge lim-badge">BOUNDARIES & UNCERTAINTIES</span>
+                    </div>
+                    <div class="block-body">
+                        <ul id="aiLimitationsList" class="ai-bullets-list list-danger">
+                            <!-- Populated dynamically -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mission-footer">
+        <div>
+            <strong>StellarIntel</strong> &mdash; Satellite Telemetry Intelligence &amp; Diagnostic Platform
+        </div>
+        <div class="footer-tags">
+            <span class="tag-pill" style="color: #34D399; border-color: rgba(52, 211, 153, 0.4);">MISSION CONTROL ACTIVE</span>
+            <span class="tag-pill">TELEMETRY LINK: ONLINE</span>
+        </div>
+    </footer>
+
+</div>
+
+<!-- Mission Control JavaScript -->
+<script th:src="@{/js/telemetry.js}" src="/js/telemetry.js"></script>
+
+</body>
+</html>

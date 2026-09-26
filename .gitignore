@@ -1,0 +1,30 @@
+# Maven build output
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+src/main/resources/application.yml
+
+# Environment variables & secrets
+.env
+.env.*
+*.key
+*.pem
+secrets/
+
+# IDE / Editor configuration
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# OS specific files
+Thumbs.db
+.DS_Store
+
+# Log files
+*.log
+logs/
