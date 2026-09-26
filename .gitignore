@@ -8,7 +8,6 @@ src/main/resources/application.yml
 
 # Environment variables & secrets
 .env
-.env.*
 *.key
 *.pem
 secrets/
